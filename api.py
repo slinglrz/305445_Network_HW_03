@@ -1,11 +1,10 @@
 import pymongo
-from datetime import datetime, date
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 
 client = pymongo.MongoClient('localhost', 27017)
 
-app= Flask(_name_)
+app= Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
 parser.add_argument('id')
@@ -31,7 +30,7 @@ class Register(Resource):
             member.insert({"user":{"employee_number":id, "firstname":firstname, "lastname":lastname, "password":password}, "worktime":[]})
             return {"firstname":firstname, "lastname":lastname, "employee_number":id, "password":password}
         else:
-            return {"error":"This information is already in the system."}
+            return {"error"}
 
 from datetime import datetime, date
 class Login(Resource):
@@ -44,13 +43,13 @@ class Login(Resource):
         if data:
             firstname = data['user']['firstname']
             lastname = data['user']['lastname']
-            worktime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            member.update({"user.employee_number":username}, {"$push":{"worktime":{"datetime":worktime}}})
-            return {"firstname":firstname, "lastname":lastname, "datetime":worktime}
+            time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            member.update({"user.employee_number":username}, {"$push":{"time":{"datetime":time}}})
+            return {"firstname":firstname, "lastname":lastname, "datetime":time}
         else:
             return {}
 
-class WorkTime(Resource):
+class WTime(Resource):
     def get(self):
         args = parser.parse_args()
         id = args['id']
@@ -58,14 +57,14 @@ class WorkTime(Resource):
         if data:
             firstname = data['user']['firstname']
             lastname = data['user']['lastname']
-            worktime = data['worktime']
-            return {"firstname":firstname,"lastname":lastname,"worktime":worktime}
+            Wtime = data['time']
+            return {"firstname":firstname,"lastname":lastname,"time":Wtime}
         else:
             return {}
 
-api.add_resource(Register, '/api/register')
+api.add_resource(Regis, '/api/regis')
 api.add_resource(Login, '/api/login')
-api.add_resource(WorkTime,'/api/worktime')
+api.add_resource(WTime,'/api/time')
 
-if _name_ == '_main_':
-        app.run(host='0.0.0.0', port=5001)
+if __name__ == '__main__':
+        app.run(host='0.0.0.0', port=5005)
